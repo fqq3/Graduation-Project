@@ -9,7 +9,8 @@ import java.util.List;
  * @Description: com.fqq.futurecommunity.system.domain.dto
  * @version: 1.0
  */
-public class AreaDto implements Serializable{
+public class SysAreaDto implements Serializable{
+    private static final long serialVersionUID=1L;
    //区域层级模型 - 树结构
 
         //区划码
@@ -19,7 +20,7 @@ public class AreaDto implements Serializable{
         private String name;
 
         //子区划
-        private List<AreaDto> children;
+        private List<SysAreaDto> children;
 
         public Integer getCode() {
             return code;
@@ -37,11 +38,11 @@ public class AreaDto implements Serializable{
             this.name = name;
         }
 
-        public List<AreaDto> getChildren() {
+        public List<SysAreaDto> getChildren() {
             return children;
         }
 
-        public void setChildren(List<AreaDto> children) {
+        public void setChildren(List<SysAreaDto> children) {
             this.children = children;
         }
 

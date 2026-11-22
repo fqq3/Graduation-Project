@@ -1,9 +1,9 @@
-package com.fqq.community.common.core.domain;
+package com.fqq.futurecommunity.common.core.domain;
 
 /**
  * @author: fqq
  * @Date: 2026/3/6 - 03 - 06 - 16:09
- * @Description: com.fqq.community.common.core.domain
+ * @Description: com.fqq.futurecommunity.common.core.domain
  * @version: 1.0
  */
 public enum ResultCode {

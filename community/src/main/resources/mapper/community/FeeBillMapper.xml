@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fqq.futurecommunity.community.mapper.FeeBillMapper">
+
+    <select id="selectFeeBillList" resultType="com.fqq.futurecommunity.community.domain.dto.FeeBillDto">
+        SELECT
+            fb.bill_id AS billId,
+            fb.bill_no AS billNo,
+            fb.owner_id AS ownerId,
+            fb.owner_name AS ownerName,
+            fb.room_id AS roomId,
+            fb.item_id AS itemId,
+            fb.item_name AS itemName,
+            fb.bill_year AS billYear,
+            fb.bill_month AS billMonth,
+            fb.receivable_amount AS receivableAmount,
+            fb.received_amount AS receivedAmount,
+            fb.unpaid_amount AS unpaidAmount,
+            fb.due_date AS dueDate,
+            fb.bill_status AS billStatus,
+            fb.create_by AS createBy,
+            fb.create_time AS createTime,
+            fb.update_by AS updateBy,
+            fb.update_time AS updateTime,
+            fb.remark AS remark,
+            c.community_name AS communityName,
+            b.building_name AS buildingName,
+            u.unit_name AS unitName,
+            r.room_name AS roomName,
+            o.owner_real_name AS ownerRealName,
+            o.owner_phone_number AS ownerPhoneNumber
+        FROM community_fee_bill fb
+        LEFT JOIN owner o ON o.owner_id = fb.owner_id
+        LEFT JOIN room r ON r.room_id = fb.room_id
+        LEFT JOIN community c ON c.community_id = r.community_id
+        LEFT JOIN building b ON b.building_id = r.building_id
+        LEFT JOIN unit u ON u.unit_id = r.unit_id
+        LEFT JOIN community_fee_item fi ON fi.item_id = fb.item_id
+        <where>
+            <if test="q.communityId != null">
+                AND c.community_id = #{q.communityId}
+            </if>
+            <if test="q.billNo != null and q.billNo != ''">
+                AND fb.bill_no LIKE CONCAT('%', #{q.billNo}, '%')
+            </if>
+            <if test="q.ownerId != null">
+                AND fb.owner_id = #{q.ownerId}
+            </if>
+            <if test="q.ownerName != null and q.ownerName != ''">
+                AND (fb.owner_name LIKE CONCAT('%', #{q.ownerName}, '%') OR o.owner_real_name LIKE CONCAT('%', #{q.ownerName}, '%'))
+            </if>
+            <if test="q.roomId != null">
+                AND fb.room_id = #{q.roomId}
+            </if>
+            <if test="q.itemId != null">
+                AND fb.item_id = #{q.itemId}
+            </if>
+            <if test="q.itemName != null and q.itemName != ''">
+                AND fb.item_name LIKE CONCAT('%', #{q.itemName}, '%')
+            </if>
+            <if test="q.billYear != null">
+                AND fb.bill_year = #{q.billYear}
+            </if>
+            <if test="q.billMonth != null">
+                AND fb.bill_month = #{q.billMonth}
+            </if>
+            <if test="q.billStatus != null and q.billStatus != ''">
+                AND fb.bill_status = #{q.billStatus}
+            </if>
+        </where>
+        ORDER BY fb.create_time DESC, fb.bill_id DESC
+    </select>
+
+    <sql id="financeStatWhere">
+        <where>
+            <if test="q != null and q.communityId != null">
+                AND r.community_id = #{q.communityId}
+            </if>
+            <if test="q != null and q.billYear != null">
+                AND fb.bill_year = #{q.billYear}
+            </if>
+            <if test="q != null and q.billMonth != null">
+                AND fb.bill_month = #{q.billMonth}
+            </if>
+            <if test="q != null and q.itemName != null and q.itemName != ''">
+                AND fb.item_name LIKE CONCAT('%', #{q.itemName}, '%')
+            </if>
+            AND (fb.bill_status IS NULL OR fb.bill_status != '3')
+        </where>
+    </sql>
+
+    <select id="selectFinanceOverview" resultType="java.util.HashMap">
+        SELECT
+            IFNULL(SUM(receivable_amount), 0) AS totalReceivable,
+            IFNULL(SUM(received_amount), 0) AS totalReceived,
+            IFNULL(SUM(unpaid_amount), 0) AS totalUnpaid,
+            COUNT(1) AS billCount,
+            SUM(CASE WHEN bill_status = '2' THEN 1 ELSE 0 END) AS paidBillCount,
+            SUM(CASE WHEN bill_status = '1' THEN 1 ELSE 0 END) AS partialBillCount,
+            SUM(CASE WHEN bill_status = '0' THEN 1 ELSE 0 END) AS unpaidBillCount
+        FROM community_fee_bill fb
+        LEFT JOIN room r ON r.room_id = fb.room_id
+        <include refid="financeStatWhere" />
+    </select>
+
+    <select id="selectFinanceMonthStat" resultType="java.util.HashMap">
+        SELECT
+            bill_year AS billYear,
+            bill_month AS billMonth,
+            CONCAT(bill_year, '-', LPAD(bill_month, 2, '0')) AS statMonth,
+            IFNULL(SUM(receivable_amount), 0) AS receivableAmount,
+            IFNULL(SUM(received_amount), 0) AS receivedAmount,
+            IFNULL(SUM(unpaid_amount), 0) AS unpaidAmount,
+            COUNT(1) AS billCount
+        FROM community_fee_bill fb
+        LEFT JOIN room r ON r.room_id = fb.room_id
+        <include refid="financeStatWhere" />
+        GROUP BY bill_year, bill_month
+        ORDER BY bill_year ASC, bill_month ASC
+    </select>
+
+    <select id="selectFinanceItemStat" resultType="java.util.HashMap">
+        SELECT
+            item_id AS itemId,
+            item_name AS itemName,
+            IFNULL(SUM(receivable_amount), 0) AS receivableAmount,
+            IFNULL(SUM(received_amount), 0) AS receivedAmount,
+            IFNULL(SUM(unpaid_amount), 0) AS unpaidAmount,
+            COUNT(1) AS billCount
+        FROM community_fee_bill fb
+        LEFT JOIN room r ON r.room_id = fb.room_id
+        <include refid="financeStatWhere" />
+        GROUP BY item_id, item_name
+        ORDER BY receivedAmount DESC, receivableAmount DESC
+    </select>
+
+</mapper>

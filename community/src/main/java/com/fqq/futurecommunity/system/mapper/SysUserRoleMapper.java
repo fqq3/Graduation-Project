@@ -1,15 +1,14 @@
-package com.msb.hjycommunity.system.mapper;
+package com.fqq.futurecommunity.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.msb.hjycommunity.system.domain.SysUserRole;
+import com.fqq.futurecommunity.system.domain.SysUserRole;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 /**
  * 用户与角色关联表 数据层
- * @author spikeCong
- * @date 2023/5/25
+
  **/
 public interface SysUserRoleMapper extends BaseMapper<SysUserRole>
 {

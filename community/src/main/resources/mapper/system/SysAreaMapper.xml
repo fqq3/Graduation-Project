@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fqq.futurecommunity.system.mapper.SysAreaMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="SysAreaMap" type="com.fqq.futurecommunity.system.domain.SysArea">
+        <id column="id" property="id" />
+        <result column="code" property="code" />
+        <result column="name" property="name" />
+        <result column="parentId" property="parentId" />
+        <result column="level" property="level" />
+        <result column="type" property="type" />
+        <result column="servicestate" property="servicestate" />
+        <result column="delete_flag" property="deleteFlag" />
+        <result column="region" property="region" />
+    </resultMap>
+<!--    查询区域划码-->
+    <select id="findAll" resultMap="SysAreaMap">
+        SELECT code,name, parentId AS parentCode FROM sys_area;
+    </select>
+
+</mapper>

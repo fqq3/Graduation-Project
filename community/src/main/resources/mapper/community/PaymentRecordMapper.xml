@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fqq.futurecommunity.community.mapper.PaymentRecordMapper">
+
+    <select id="selectPaymentRecordList" resultType="com.fqq.futurecommunity.community.domain.dto.PaymentRecordDto">
+        SELECT
+            pr.payment_id AS paymentId,
+            pr.payment_no AS paymentNo,
+            pr.bill_id AS billId,
+            pr.owner_id AS ownerId,
+            pr.owner_name AS ownerName,
+            pr.room_id AS roomId,
+            pr.payment_amount AS paymentAmount,
+            pr.payment_method AS paymentMethod,
+            pr.payment_status AS paymentStatus,
+            pr.payment_time AS paymentTime,
+            pr.operator_name AS operatorName,
+            pr.receipt_no AS receiptNo,
+            pr.create_by AS createBy,
+            pr.create_time AS createTime,
+            pr.update_by AS updateBy,
+            pr.update_time AS updateTime,
+            pr.remark AS remark,
+            fb.bill_no AS billNo,
+            fb.item_name AS itemName,
+            c.community_name AS communityName,
+            b.building_name AS buildingName,
+            u.unit_name AS unitName,
+            r.room_name AS roomName,
+            o.owner_real_name AS ownerRealName,
+            o.owner_phone_number AS ownerPhoneNumber
+        FROM community_payment_record pr
+        LEFT JOIN community_fee_bill fb ON fb.bill_id = pr.bill_id
+        LEFT JOIN owner o ON o.owner_id = pr.owner_id
+        LEFT JOIN room r ON r.room_id = pr.room_id
+        LEFT JOIN community c ON c.community_id = r.community_id
+        LEFT JOIN building b ON b.building_id = r.building_id
+        LEFT JOIN unit u ON u.unit_id = r.unit_id
+        <where>
+            <if test="q.communityId != null">
+                AND c.community_id = #{q.communityId}
+            </if>
+            <if test="q.paymentNo != null and q.paymentNo != ''">
+                AND pr.payment_no LIKE CONCAT('%', #{q.paymentNo}, '%')
+            </if>
+            <if test="q.billNo != null and q.billNo != ''">
+                AND fb.bill_no LIKE CONCAT('%', #{q.billNo}, '%')
+            </if>
+            <if test="q.billId != null">
+                AND pr.bill_id = #{q.billId}
+            </if>
+            <if test="q.ownerId != null">
+                AND pr.owner_id = #{q.ownerId}
+            </if>
+            <if test="q.ownerName != null and q.ownerName != ''">
+                AND (pr.owner_name LIKE CONCAT('%', #{q.ownerName}, '%') OR o.owner_real_name LIKE CONCAT('%', #{q.ownerName}, '%'))
+            </if>
+            <if test="q.roomId != null">
+                AND pr.room_id = #{q.roomId}
+            </if>
+            <if test="q.paymentMethod != null and q.paymentMethod != ''">
+                AND pr.payment_method = #{q.paymentMethod}
+            </if>
+            <if test="q.paymentStatus != null and q.paymentStatus != ''">
+                AND pr.payment_status = #{q.paymentStatus}
+            </if>
+            <if test="q.receiptNo != null and q.receiptNo != ''">
+                AND pr.receipt_no LIKE CONCAT('%', #{q.receiptNo}, '%')
+            </if>
+        </where>
+        ORDER BY pr.payment_time DESC, pr.payment_id DESC
+    </select>
+
+    <select id="selectSuccessfulAmountByBillId" resultType="java.math.BigDecimal">
+        SELECT IFNULL(SUM(payment_amount), 0)
+        FROM community_payment_record
+        WHERE bill_id = #{billId}
+          AND payment_status = '1'
+    </select>
+
+</mapper>

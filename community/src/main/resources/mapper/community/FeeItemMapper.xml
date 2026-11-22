@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fqq.futurecommunity.community.mapper.FeeItemMapper">
+
+    <select id="selectFeeItemList" resultType="com.fqq.futurecommunity.community.domain.dto.FeeItemDto">
+        SELECT
+            fi.item_id AS itemId,
+            fi.item_name AS itemName,
+            fi.item_type AS itemType,
+            fi.charge_standard AS chargeStandard,
+            fi.charge_unit AS chargeUnit,
+            fi.charge_cycle AS chargeCycle,
+            fi.status AS status,
+            fi.create_by AS createBy,
+            fi.create_time AS createTime,
+            fi.update_by AS updateBy,
+            fi.update_time AS updateTime,
+            fi.remark AS remark
+        FROM community_fee_item fi
+        <where>
+            <if test="q.itemName != null and q.itemName != ''">
+                AND fi.item_name LIKE CONCAT('%', #{q.itemName}, '%')
+            </if>
+            <if test="q.itemType != null and q.itemType != ''">
+                AND fi.item_type = #{q.itemType}
+            </if>
+            <if test="q.chargeCycle != null and q.chargeCycle != ''">
+                AND fi.charge_cycle = #{q.chargeCycle}
+            </if>
+            <if test="q.status != null and q.status != ''">
+                AND fi.status = #{q.status}
+            </if>
+        </where>
+        ORDER BY fi.create_time DESC, fi.item_id DESC
+    </select>
+
+</mapper>

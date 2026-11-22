@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fqq.futurecommunity.system.mapper.SysJobLogMapper">
+
+    <sql id="selectJobLogColumns">
+        select
+            job_log_id as jobLogId,
+            job_name as jobName,
+            job_group as jobGroup,
+            invoke_target as invokeTarget,
+            job_message as jobMessage,
+            status,
+            cast(exception_info as char) as exceptionInfo,
+            create_time as createTime
+        from sys_job_log
+    </sql>
+
+    <sql id="jobLogWhere">
+        <where>
+            <if test="jobLog.jobName != null and jobLog.jobName != ''">
+                and job_name like concat('%', #{jobLog.jobName}, '%')
+            </if>
+            <if test="jobLog.jobGroup != null and jobLog.jobGroup != ''">
+                and job_group = #{jobLog.jobGroup}
+            </if>
+            <if test="jobLog.status != null and jobLog.status != ''">
+                and status = #{jobLog.status}
+            </if>
+            <if test="jobLog.params != null and jobLog.params.beginTime != null and jobLog.params.beginTime != ''">
+                and create_time &gt;= #{jobLog.params.beginTime}
+            </if>
+            <if test="jobLog.params != null and jobLog.params.endTime != null and jobLog.params.endTime != ''">
+                and create_time &lt;= #{jobLog.params.endTime}
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectJobLogPage" resultType="com.fqq.futurecommunity.system.domain.SysJobLog">
+        <include refid="selectJobLogColumns" />
+        <include refid="jobLogWhere" />
+        order by create_time desc, job_log_id desc
+    </select>
+
+    <select id="selectJobLogList" resultType="com.fqq.futurecommunity.system.domain.SysJobLog">
+        <include refid="selectJobLogColumns" />
+        <include refid="jobLogWhere" />
+        order by create_time desc, job_log_id desc
+    </select>
+
+    <delete id="cleanJobLog">
+        delete from sys_job_log
+    </delete>
+</mapper>

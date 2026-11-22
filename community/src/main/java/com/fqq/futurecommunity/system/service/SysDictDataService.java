@@ -1,14 +1,15 @@
-package com.msb.hjycommunity.system.service;
+package com.fqq.futurecommunity.system.service;
 
-import com.msb.hjycommunity.system.domain.SysDictData;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fqq.futurecommunity.system.domain.SysDictData;
 
 import java.util.List;
 
-/**
- * @author spikeCong
- * @date 2023/5/22
- **/
+
 public interface SysDictDataService {
+
+
+    Page<SysDictData> selectDictDataPage(Page<SysDictData> page, SysDictData sysDictData);
 
     /**
      * 根据条件分页查询字典数据
@@ -16,7 +17,7 @@ public interface SysDictDataService {
      * @param dictData 字典数据信息
      * @return 字典数据集合信息
      */
-    public List<SysDictData> selectDictDataList(SysDictData dictData);
+//    public List<SysDictData> selectDictDataList(SysDictData dictData);
 
     /**
      * 根据字典类型和字典键值查询字典数据信息

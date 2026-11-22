@@ -1,7 +1,10 @@
-package com.msb.hjycommunity.system.mapper;
+package com.fqq.futurecommunity.system.mapper;
+
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.msb.hjycommunity.system.domain.SysPost;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fqq.futurecommunity.system.domain.SysPost;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -18,7 +21,8 @@ public interface SysPostMapper extends BaseMapper<SysPost>
      * @param post 岗位信息
      * @return 岗位数据集合
      */
-    public List<SysPost> selectPostList(SysPost post);
+    Page<SysPost> selectPostList(Page<SysPost> page, @Param("post") SysPost post);
+//    public List<SysPost> selectPostList(SysPost post);
 
     /**
      * 查询所有岗位

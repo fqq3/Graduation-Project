@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fqq.futurecommunity.system.mapper.SysConfigMapper">
+
+    <sql id="selectConfigColumns">
+        select
+            config_id as configId,
+            config_name as configName,
+            config_key as configKey,
+            config_value as configValue,
+            config_type as configType,
+            create_by as createBy,
+            create_time as createTime,
+            update_by as updateBy,
+            update_time as updateTime,
+            remark
+        from sys_config
+    </sql>
+
+    <sql id="configWhere">
+        <where>
+            <if test="config.configName != null and config.configName != ''">
+                and config_name like concat('%', #{config.configName}, '%')
+            </if>
+            <if test="config.configKey != null and config.configKey != ''">
+                and config_key like concat('%', #{config.configKey}, '%')
+            </if>
+            <if test="config.configType != null and config.configType != ''">
+                and config_type = #{config.configType}
+            </if>
+            <if test="config.params != null and config.params.beginTime != null and config.params.beginTime != ''">
+                and create_time &gt;= #{config.params.beginTime}
+            </if>
+            <if test="config.params != null and config.params.endTime != null and config.params.endTime != ''">
+                and create_time &lt;= #{config.params.endTime}
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectConfigPage" resultType="com.fqq.futurecommunity.system.domain.SysConfig">
+        <include refid="selectConfigColumns" />
+        <include refid="configWhere" />
+        order by config_id asc
+    </select>
+
+    <select id="selectConfigList" resultType="com.fqq.futurecommunity.system.domain.SysConfig">
+        <include refid="selectConfigColumns" />
+        <include refid="configWhere" />
+        order by config_id asc
+    </select>
+
+    <select id="selectConfigByKey" resultType="com.fqq.futurecommunity.system.domain.SysConfig">
+        <include refid="selectConfigColumns" />
+        where config_key = #{configKey}
+        limit 1
+    </select>
+
+    <select id="checkConfigKeyUnique" resultType="com.fqq.futurecommunity.system.domain.SysConfig">
+        <include refid="selectConfigColumns" />
+        where config_key = #{configKey}
+        limit 1
+    </select>
+</mapper>

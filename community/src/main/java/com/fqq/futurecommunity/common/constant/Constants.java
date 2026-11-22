@@ -6,7 +6,7 @@ package com.fqq.futurecommunity.common.constant;
  * @Description: com.fqq.futurecommunity.common.constant
  * @version: 1.0
  */
-public class Contants {
+public class Constants {
 
         /**
          * UTF-8 字符集

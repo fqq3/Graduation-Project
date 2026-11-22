@@ -1,13 +1,15 @@
-package com.msb.hjycommunity.system.domain;
+package com.fqq.futurecommunity.system.domain;
+
+import com.baomidou.mybatisplus.annotation.TableId;
 
 /**
  * 用户和岗位中间表
- * @author spikeCong
- * @date 2023/5/25
+
  **/
 public class SysUserPost {
 
     /** 用户ID */
+    @TableId
     private Long userId;
 
     /** 岗位ID */

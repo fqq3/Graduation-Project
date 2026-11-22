@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fqq.futurecommunity.community.mapper.RepairOrderMapper">
+
+    <select id="selectRepairOrderList" resultType="com.fqq.futurecommunity.community.domain.dto.RepairOrderDto">
+        SELECT
+            ro.repair_id AS repairId,
+            ro.repair_no AS repairNo,
+            ro.owner_id AS ownerId,
+            ro.owner_name AS ownerName,
+            ro.room_id AS roomId,
+            ro.community_id AS communityId,
+            ro.repair_title AS repairTitle,
+            ro.repair_type AS repairType,
+            ro.repair_location AS repairLocation,
+            ro.repair_content AS repairContent,
+            ro.contact_name AS contactName,
+            ro.contact_phone AS contactPhone,
+            ro.repair_images AS repairImages,
+            ro.audit_status AS auditStatus,
+            ro.audit_opinion AS auditOpinion,
+            ro.audit_by AS auditBy,
+            ro.audit_time AS auditTime,
+            ro.worker_name AS workerName,
+            ro.repair_start_time AS repairStartTime,
+            ro.repair_finish_time AS repairFinishTime,
+            ro.repair_result AS repairResult,
+            ro.repair_cost AS repairCost,
+            ro.satisfaction AS satisfaction,
+            ro.status AS status,
+            ro.create_by AS createBy,
+            ro.create_time AS createTime,
+            ro.update_by AS updateBy,
+            ro.update_time AS updateTime,
+            ro.remark AS remark,
+            c.community_name AS communityName,
+            b.building_name AS buildingName,
+            u.unit_name AS unitName,
+            r.room_name AS roomName,
+            o.owner_real_name AS ownerRealName,
+            o.owner_phone_number AS ownerPhoneNumber
+        FROM community_repair_order ro
+        LEFT JOIN community c ON c.community_id = ro.community_id
+        LEFT JOIN room r ON r.room_id = ro.room_id
+        LEFT JOIN building b ON b.building_id = r.building_id
+        LEFT JOIN unit u ON u.unit_id = r.unit_id
+        LEFT JOIN owner o ON o.owner_id = ro.owner_id
+        <where>
+            <if test="q.repairNo != null and q.repairNo != ''">
+                AND ro.repair_no LIKE CONCAT('%', #{q.repairNo}, '%')
+            </if>
+            <if test="q.ownerId != null">
+                AND ro.owner_id = #{q.ownerId}
+            </if>
+            <if test="q.ownerName != null and q.ownerName != ''">
+                AND (ro.owner_name LIKE CONCAT('%', #{q.ownerName}, '%') OR o.owner_real_name LIKE CONCAT('%', #{q.ownerName}, '%'))
+            </if>
+            <if test="q.roomId != null">
+                AND ro.room_id = #{q.roomId}
+            </if>
+            <if test="q.communityId != null">
+                AND ro.community_id = #{q.communityId}
+            </if>
+            <if test="q.repairTitle != null and q.repairTitle != ''">
+                AND ro.repair_title LIKE CONCAT('%', #{q.repairTitle}, '%')
+            </if>
+            <if test="q.repairType != null and q.repairType != ''">
+                AND ro.repair_type = #{q.repairType}
+            </if>
+            <if test="q.auditStatus != null and q.auditStatus != ''">
+                AND ro.audit_status = #{q.auditStatus}
+            </if>
+            <if test="q.status != null and q.status != ''">
+                AND ro.status = #{q.status}
+            </if>
+            <if test="q.contactPhone != null and q.contactPhone != ''">
+                AND ro.contact_phone LIKE CONCAT('%', #{q.contactPhone}, '%')
+            </if>
+        </where>
+        ORDER BY ro.create_time DESC, ro.repair_id DESC
+    </select>
+
+</mapper>

@@ -1,24 +1,22 @@
-package com.msb.hjycommunity.system.mapper;
+package com.fqq.futurecommunity.system.mapper;
+
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.msb.hjycommunity.system.domain.SysDictData;
-import org.apache.ibatis.annotations.Param;
+import com.fqq.futurecommunity.system.domain.SysDictData;
+import org.apache.ibatis.annotations.Param; //
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page; //
 
 import java.util.List;
 
-/**
- * @author spikeCong
- * @date 2023/5/22
- **/
 public interface SysDictDataMapper extends BaseMapper<SysDictData>
 {
+    Page<SysDictData> selectDictDataPage(Page<SysDictData> page, @Param("sysDictData") SysDictData sysDictData);
     /**
      * 根据条件分页查询字典数据
-     *
      * @param dictData 字典数据信息
      * @return 字典数据集合信息
      */
-    public List<SysDictData> selectDictDataList(SysDictData dictData);
+//    public List<SysDictData> selectDictDataList(SysDictData dictData);
 
     /**
      * 根据字典类型查询字典数据

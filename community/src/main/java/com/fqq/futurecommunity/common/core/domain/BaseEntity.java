@@ -1,7 +1,9 @@
-package com.fqq.community.common.core.domain;
+package com.fqq.futurecommunity.common.core.domain;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -13,6 +15,8 @@ import java.util.Map;
  * @Description: com.fqq.community.common.core.domain
  * @version: 1.0
  */
+@Getter
+@Setter
 public class BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     /** * 搜索值 *
@@ -21,21 +25,15 @@ public class BaseEntity implements Serializable {
      *  */
     @TableField(exist=false)
     private String searchValue;
+
+    //请求参数
+    @TableField(exist=false)
+    private Map<String, Object> params;
+
     /** * 创建者 * fill 在需要被填充的字段上使用注解，声明什么时候要被填充
      * * FieldFill.INSERT 只在插入时填充
      * * FieldFill.INSERT_UPDATE 插入和更新时都填充
      * */
-
-    /**
-     * 请求参数
-     */
-    @TableField(exist=false)
-    private Map<String, Object> params;
-    /**创建者 * fill 在需要被填充的字段上使用注解，声明什么时候要被填充
-     * * FieldFill.INSERT 只在插入时填充
-     * * FieldFill.INSERT_UPDATE 插入和更新时都填充
-     */
-    //创建者
     @TableField(fill = FieldFill.INSERT)
     private String createBy;
     //创建时间
@@ -46,66 +44,12 @@ public class BaseEntity implements Serializable {
     @TableField(fill=FieldFill.INSERT_UPDATE)
     private String updateBy;
     //更新时间
-    @JsonFormat(pattern="yyyy-MM--dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @TableField(fill=FieldFill.INSERT_UPDATE)
     private Date updateTime;
 
     //备注
     private String remark;
 
-    public String getSearchValue() {
-        return searchValue;
-    }
 
-    public void setSearchValue(String sesearchValue) {
-        this.searchValue = sesearchValue;
-    }
-
-    public Map<String, Object> getParams() {
-        return params;
-    }
-
-    public void setParams(Map<String, Object> params) {
-        this.params = params;
-    }
-
-    public String getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getUpdateBy() {
-        return updateBy;
-    }
-
-    public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
 }

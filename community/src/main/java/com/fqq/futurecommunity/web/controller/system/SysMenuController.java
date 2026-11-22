@@ -1,22 +1,22 @@
-package com.msb.hjycommunity.web.controller.system;
+package com.fqq.futurecommunity.web.controller.system;
 
-import com.msb.hjycommunity.common.constant.Constants;
-import com.msb.hjycommunity.common.constant.UserConstants;
-import com.msb.hjycommunity.common.core.controller.BaseController;
-import com.msb.hjycommunity.common.core.domain.BaseResponse;
-import com.msb.hjycommunity.common.core.domain.TreeSelect;
-import com.msb.hjycommunity.common.utils.ChainedMap;
-import com.msb.hjycommunity.common.utils.SecurityUtils;
-import com.msb.hjycommunity.common.utils.ServletUtils;
-import com.msb.hjycommunity.system.domain.LoginUser;
-import com.msb.hjycommunity.system.domain.SysMenu;
-import com.msb.hjycommunity.system.service.SysMenuService;
-import com.msb.hjycommunity.system.service.TokenService;
+
+import com.fqq.futurecommunity.common.constant.Constants;
+import com.fqq.futurecommunity.common.constant.UserConstants;
+import com.fqq.futurecommunity.common.core.domain.BaseController;
+import com.fqq.futurecommunity.common.core.domain.BaseResponse;
+import com.fqq.futurecommunity.common.core.domain.TreeSelect;
+import com.fqq.futurecommunity.common.utils.ChainedMap;
+import com.fqq.futurecommunity.common.utils.SecurityUtils;
+import com.fqq.futurecommunity.common.utils.ServletUtils;
+import com.fqq.futurecommunity.system.domain.LoginUser;
+import com.fqq.futurecommunity.system.domain.SysMenu;
+import com.fqq.futurecommunity.system.service.SysMenuService;
+import com.fqq.futurecommunity.system.service.TokenService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**

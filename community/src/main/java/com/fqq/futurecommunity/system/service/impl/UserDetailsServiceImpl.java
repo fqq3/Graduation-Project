@@ -9,6 +9,7 @@ package com.fqq.futurecommunity.system.service.impl;
 
 import com.fqq.futurecommunity.common.core.exception.BaseException;
 import com.fqq.futurecommunity.common.enums.UserStatus;
+import com.fqq.futurecommunity.framework.service.SysPermissionService;
 import com.fqq.futurecommunity.system.domain.LoginUser;
 import com.fqq.futurecommunity.system.domain.SysUser;
 import com.fqq.futurecommunity.system.service.SysUserService;
@@ -55,9 +56,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return createLoginUser(user);
     }
 
-    public UserDetails createLoginUser(SysUser user) {
 
-        return new LoginUser(user);
+    @Autowired
+    private SysPermissionService permissionService;
+
+    public UserDetails createLoginUser(SysUser user) {
+        return new LoginUser(user,permissionService.getMenuPermission(user));
     }
 }
 

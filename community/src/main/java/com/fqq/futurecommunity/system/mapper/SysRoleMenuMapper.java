@@ -1,7 +1,8 @@
-package com.msb.hjycommunity.system.mapper;
+package com.fqq.futurecommunity.system.mapper;
+
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.msb.hjycommunity.system.domain.SysRoleMenu;
+import com.fqq.futurecommunity.system.domain.SysRoleMenu;
 
 import java.util.List;
 

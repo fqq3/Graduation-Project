@@ -1,7 +1,8 @@
-package com.msb.hjycommunity.common.core.domain;
+package com.fqq.futurecommunity.common.core.domain;
 
-import com.msb.hjycommunity.system.domain.SysDept;
-import com.msb.hjycommunity.system.domain.SysMenu;
+
+import com.fqq.futurecommunity.system.domain.SysDept;
+import com.fqq.futurecommunity.system.domain.SysMenu;
 
 import java.io.Serializable;
 import java.util.List;
@@ -9,8 +10,6 @@ import java.util.stream.Collectors;
 
 /**
  * 构建树形结构实体类
- * @author spikeCong
- * @date 2023/5/24
  **/
 public class TreeSelect implements Serializable {
 

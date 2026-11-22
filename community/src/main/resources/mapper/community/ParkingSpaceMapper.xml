@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fqq.futurecommunity.community.mapper.ParkingSpaceMapper">
+
+    <select id="selectParkingSpaceList" resultType="com.fqq.futurecommunity.community.domain.dto.ParkingSpaceDto">
+        SELECT
+            ps.space_id AS spaceId,
+            ps.community_id AS communityId,
+            ps.space_no AS spaceNo,
+            ps.space_area AS spaceArea,
+            ps.space_type AS spaceType,
+            ps.use_status AS useStatus,
+            ps.owner_id AS ownerId,
+            ps.vehicle_id AS vehicleId,
+            ps.start_date AS startDate,
+            ps.end_date AS endDate,
+            ps.monthly_fee AS monthlyFee,
+            ps.create_by AS createBy,
+            ps.create_time AS createTime,
+            ps.update_by AS updateBy,
+            ps.update_time AS updateTime,
+            ps.remark AS remark,
+            c.community_name AS communityName,
+            o.owner_real_name AS ownerName,
+            o.owner_phone_number AS ownerPhoneNumber,
+            v.plate_no AS plateNo
+        FROM community_parking_space ps
+        LEFT JOIN community c ON c.community_id = ps.community_id
+        LEFT JOIN owner o ON o.owner_id = ps.owner_id
+        LEFT JOIN community_vehicle v ON v.vehicle_id = ps.vehicle_id
+        <where>
+            <if test="q.communityId != null">
+                AND ps.community_id = #{q.communityId}
+            </if>
+            <if test="q.spaceNo != null and q.spaceNo != ''">
+                AND ps.space_no LIKE CONCAT('%', #{q.spaceNo}, '%')
+            </if>
+            <if test="q.spaceArea != null and q.spaceArea != ''">
+                AND ps.space_area LIKE CONCAT('%', #{q.spaceArea}, '%')
+            </if>
+            <if test="q.spaceType != null and q.spaceType != ''">
+                AND ps.space_type = #{q.spaceType}
+            </if>
+            <if test="q.useStatus != null and q.useStatus != ''">
+                AND ps.use_status = #{q.useStatus}
+            </if>
+            <if test="q.ownerId != null">
+                AND ps.owner_id = #{q.ownerId}
+            </if>
+            <if test="q.vehicleId != null">
+                AND ps.vehicle_id = #{q.vehicleId}
+            </if>
+        </where>
+        ORDER BY ps.create_time DESC, ps.space_id DESC
+    </select>
+
+</mapper>

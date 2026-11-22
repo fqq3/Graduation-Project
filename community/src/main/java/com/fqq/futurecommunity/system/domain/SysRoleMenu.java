@@ -1,4 +1,6 @@
-package com.msb.hjycommunity.system.domain;
+package com.fqq.futurecommunity.system.domain;
+
+import com.baomidou.mybatisplus.annotation.TableId;
 
 /**
  * 角色和菜单关联 sys_role_menu
@@ -8,6 +10,7 @@ package com.msb.hjycommunity.system.domain;
 public class SysRoleMenu {
 
     /** 角色ID */
+    @TableId
     private Long roleId;
 
     /** 菜单ID */

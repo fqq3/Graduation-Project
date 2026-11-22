@@ -1,13 +1,13 @@
-package com.msb.hjycommunity.system.domain;
+package com.fqq.futurecommunity.system.domain;
 
-import cn.afterturn.easypoi.excel.annotation.Excel;
+
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.msb.hjycommunity.common.core.domain.BaseEntity;
+import com.fqq.futurecommunity.common.core.domain.BaseEntity;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 /**
  * 岗位表 sys_post
@@ -19,20 +19,20 @@ public class SysPost extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** 岗位序号 */
-    @Excel(name = "岗位序号")
+    @ExcelProperty("岗位序号")
     @TableId
     private Long postId;
 
     /** 岗位编码 */
-    @Excel(name = "岗位编码")
+    @ExcelProperty("岗位编码")
     private String postCode;
 
     /** 岗位名称 */
-    @Excel(name = "岗位名称")
+    @ExcelProperty("岗位名称")
     private String postName;
 
     /** 岗位排序 */
-    @Excel(name = "岗位排序")
+    @ExcelProperty("岗位排序")
     private String postSort;
 
     /** 状态（0正常 1停用） */
@@ -70,7 +70,7 @@ public class SysPost extends BaseEntity
 
     public void setPostName(String postName)
     {
-        this.postName = postName;
+        this.postName=postName;
     }
 
     @NotBlank(message = "显示顺序不能为空")

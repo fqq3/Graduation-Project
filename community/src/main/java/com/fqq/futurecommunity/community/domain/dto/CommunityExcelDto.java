@@ -14,7 +14,7 @@ import java.util.Date;
  * @version: 1.0
  */
 @Data
-public class ExcelDto implements Serializable {
+public class CommunityExcelDto implements Serializable {
 
     /** 小区id */
     @ExcelProperty("序号")

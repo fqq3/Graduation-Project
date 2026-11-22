@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fqq.futurecommunity.community.mapper.VehicleMapper">
+
+    <select id="selectVehicleList" resultType="com.fqq.futurecommunity.community.domain.dto.VehicleDto">
+        SELECT
+            v.vehicle_id AS vehicleId,
+            v.owner_id AS ownerId,
+            v.owner_name AS ownerName,
+            v.room_id AS roomId,
+            v.plate_no AS plateNo,
+            v.vehicle_type AS vehicleType,
+            v.vehicle_brand AS vehicleBrand,
+            v.vehicle_color AS vehicleColor,
+            v.phone AS phone,
+            v.bind_status AS bindStatus,
+            v.status AS status,
+            v.create_by AS createBy,
+            v.create_time AS createTime,
+            v.update_by AS updateBy,
+            v.update_time AS updateTime,
+            v.remark AS remark,
+            c.community_name AS communityName,
+            b.building_name AS buildingName,
+            u.unit_name AS unitName,
+            COALESCE(vr.room_name, lr.room_name) AS roomName,
+            o.owner_real_name AS ownerRealName,
+            o.owner_phone_number AS ownerPhoneNumber
+        FROM community_vehicle v
+        LEFT JOIN owner o ON o.owner_id = v.owner_id
+        LEFT JOIN room vr ON vr.room_id = v.room_id
+        LEFT JOIN owner_room orr
+            ON orr.owner_id = v.owner_id
+            AND orr.room_id = v.room_id
+        LEFT JOIN owner_room lor
+            ON lor.owner_id = v.owner_id
+            AND lor.owner_room_id = (
+                SELECT MAX(lor2.owner_room_id)
+                FROM owner_room lor2
+                WHERE lor2.owner_id = v.owner_id
+            )
+        LEFT JOIN room lr ON lr.room_id = lor.room_id
+        LEFT JOIN community c ON c.community_id = COALESCE(vr.community_id, orr.community_id, lr.community_id, lor.community_id)
+        LEFT JOIN building b ON b.building_id = COALESCE(vr.building_id, orr.building_id, lr.building_id, lor.building_id)
+        LEFT JOIN unit u ON u.unit_id = COALESCE(vr.unit_id, orr.unit_id, lr.unit_id, lor.unit_id)
+        <where>
+            <if test="q.communityId != null">
+                AND COALESCE(vr.community_id, orr.community_id, lr.community_id, lor.community_id) = #{q.communityId}
+            </if>
+            <if test="q.ownerId != null">
+                AND v.owner_id = #{q.ownerId}
+            </if>
+            <if test="q.roomId != null">
+                AND v.room_id = #{q.roomId}
+            </if>
+            <if test="q.ownerName != null and q.ownerName != ''">
+                AND (v.owner_name LIKE CONCAT('%', #{q.ownerName}, '%') OR o.owner_real_name LIKE CONCAT('%', #{q.ownerName}, '%'))
+            </if>
+            <if test="q.plateNo != null and q.plateNo != ''">
+                AND v.plate_no LIKE CONCAT('%', #{q.plateNo}, '%')
+            </if>
+            <if test="q.vehicleType != null and q.vehicleType != ''">
+                AND v.vehicle_type = #{q.vehicleType}
+            </if>
+            <if test="q.vehicleBrand != null and q.vehicleBrand != ''">
+                AND v.vehicle_brand LIKE CONCAT('%', #{q.vehicleBrand}, '%')
+            </if>
+            <if test="q.phone != null and q.phone != ''">
+                AND v.phone LIKE CONCAT('%', #{q.phone}, '%')
+            </if>
+            <if test="q.bindStatus != null and q.bindStatus != ''">
+                AND v.bind_status = #{q.bindStatus}
+            </if>
+            <if test="q.status != null and q.status != ''">
+                AND v.status = #{q.status}
+            </if>
+        </where>
+        ORDER BY v.create_time DESC, v.vehicle_id DESC
+    </select>
+
+</mapper>

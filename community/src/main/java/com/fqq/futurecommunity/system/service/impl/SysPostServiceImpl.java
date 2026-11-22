@@ -1,21 +1,19 @@
-package com.msb.hjycommunity.system.service.impl;
+package com.fqq.futurecommunity.system.service.impl;
 
-import com.msb.hjycommunity.common.constant.UserConstants;
-import com.msb.hjycommunity.common.core.exception.CustomException;
-import com.msb.hjycommunity.system.domain.SysPost;
-import com.msb.hjycommunity.system.mapper.SysPostMapper;
-import com.msb.hjycommunity.system.service.SysPostService;
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fqq.futurecommunity.common.constant.UserConstants;
+import com.fqq.futurecommunity.system.domain.SysPost;
+import com.fqq.futurecommunity.system.mapper.SysPostMapper;
+import com.fqq.futurecommunity.system.service.SysPostService;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
 
 /**
- * 岗位信息 服务层处理
- * @author spikeCong
- * @date 2023/5/24
- **/
+ * 岗位信息 服务层处理**/
 @Service
 public class SysPostServiceImpl implements SysPostService {
 
@@ -29,9 +27,8 @@ public class SysPostServiceImpl implements SysPostService {
      * @return 岗位信息集合
      */
     @Override
-    public List<SysPost> selectPostList(SysPost post)
-    {
-        return postMapper.selectPostList(post);
+    public Page<SysPost> selectPostList(Page<SysPost> page, SysPost post) {
+        return postMapper.selectPostList(page, post);
     }
 
     /**

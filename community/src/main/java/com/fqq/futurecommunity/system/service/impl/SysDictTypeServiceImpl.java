@@ -1,29 +1,23 @@
-package com.msb.hjycommunity.system.service.impl;
+package com.fqq.futurecommunity.system.service.impl;
 
-import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
-import com.msb.hjycommunity.common.constant.Constants;
-import com.msb.hjycommunity.common.constant.UserConstants;
-import com.msb.hjycommunity.common.core.exception.CustomException;
-import com.msb.hjycommunity.common.utils.RedisCache;
-import com.msb.hjycommunity.system.domain.SysDictData;
-import com.msb.hjycommunity.system.domain.SysDictType;
-import com.msb.hjycommunity.system.mapper.SysDictDataMapper;
-import com.msb.hjycommunity.system.mapper.SysDictTypeMapper;
-import com.msb.hjycommunity.system.service.SysDictTypeService;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fqq.futurecommunity.common.constant.Constants;
+import com.fqq.futurecommunity.common.constant.UserConstants;
+import com.fqq.futurecommunity.common.core.exception.CustomException;
+import com.fqq.futurecommunity.system.domain.SysDictData;
+import com.fqq.futurecommunity.system.domain.SysDictType;
+import com.fqq.futurecommunity.system.mapper.SysDictDataMapper;
+import com.fqq.futurecommunity.system.mapper.SysDictTypeMapper;
+import com.fqq.futurecommunity.system.service.SysDictTypeService;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
-
-import javax.annotation.PostConstruct;
+import com.fqq.futurecommunity.common.utils.RedisCache;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * @author spikeCong
- * @date 2023/5/19
- **/
 @Service
 public class SysDictTypeServiceImpl implements SysDictTypeService {
 
@@ -55,10 +49,14 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
     }
 
     @Override
-    public List<SysDictType> selectDictTypeList(SysDictType dictType) {
-
-        return dictTypeMapper.selectDictTypeList(dictType);
+    public Page<SysDictType> selectDictTypeList(Page<SysDictType> page, SysDictType dictType) {
+        return dictTypeMapper.selectDictTypeList(page, dictType);
     }
+//    @Override
+//    public List<SysDictType> selectDictTypeList(SysDictType dictType) {
+//
+//        return dictTypeMapper.selectDictTypeList(dictType);
+//    }
 
     @Override
     public List<SysDictType> selectDictTypeAll() {
@@ -166,14 +164,21 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
      */
     @Override
     public String checkDictTypeUnique(SysDictType dictType) {
-
-        SysDictType sysDictType = dictTypeMapper.checkDictTypeUnique(dictType.getDictType());
-        if(!Objects.isNull(sysDictType)){
+        Long dictId = dictType.getDictId() == null ? -1L : dictType.getDictId();
+        SysDictType info = dictTypeMapper.checkDictTypeUnique(dictType.getDictType());
+        if (info != null && !info.getDictId().equals(dictId)) {
             return UserConstants.NOT_UNIQUE;
         }
-
         return UserConstants.UNIQUE;
     }
+//    @Override
+//    public String checkDictTypeUnique(SysDictType dictType) {
+//        SysDictType sysDictType = dictTypeMapper.checkDictTypeUnique(dictType.getDictType());
+//        if(!Objects.isNull(sysDictType)){
+//            return UserConstants.NOT_UNIQUE;
+//        }
+//        return UserConstants.UNIQUE;
+//    }
 
     @Override
     public void clearCache() {

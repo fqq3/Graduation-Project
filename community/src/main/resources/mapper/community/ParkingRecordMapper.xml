@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fqq.futurecommunity.community.mapper.ParkingRecordMapper">
+
+    <select id="selectParkingRecordList" resultType="com.fqq.futurecommunity.community.domain.dto.ParkingRecordDto">
+        SELECT
+            pr.record_id AS recordId,
+            pr.vehicle_id AS vehicleId,
+            pr.space_id AS spaceId,
+            pr.owner_id AS ownerId,
+            COALESCE(pr.community_id, ps.community_id, vr.community_id, orr.community_id, lr.community_id, lor.community_id) AS communityId,
+            pr.plate_no AS plateNo,
+            pr.in_time AS inTime,
+            pr.out_time AS outTime,
+            pr.parking_duration AS parkingDuration,
+            pr.parking_fee AS parkingFee,
+            pr.pay_status AS payStatus,
+            pr.record_type AS recordType,
+            pr.create_by AS createBy,
+            pr.create_time AS createTime,
+            pr.update_by AS updateBy,
+            pr.update_time AS updateTime,
+            pr.remark AS remark,
+            ps.space_no AS spaceNo,
+            ps.space_area AS spaceArea,
+            c.community_name AS communityName,
+            o.owner_real_name AS ownerName,
+            o.owner_phone_number AS ownerPhoneNumber
+        FROM community_parking_record pr
+        LEFT JOIN community_parking_space ps ON ps.space_id = pr.space_id
+        LEFT JOIN community_vehicle v ON v.vehicle_id = pr.vehicle_id
+        LEFT JOIN owner o ON o.owner_id = COALESCE(v.owner_id, pr.owner_id)
+        LEFT JOIN room vr ON vr.room_id = v.room_id
+        LEFT JOIN owner_room orr
+            ON orr.owner_id = COALESCE(v.owner_id, pr.owner_id)
+            AND orr.room_id = v.room_id
+        LEFT JOIN owner_room lor
+            ON lor.owner_id = COALESCE(v.owner_id, pr.owner_id)
+            AND lor.owner_room_id = (
+                SELECT MAX(lor2.owner_room_id)
+                FROM owner_room lor2
+                WHERE lor2.owner_id = COALESCE(v.owner_id, pr.owner_id)
+            )
+        LEFT JOIN room lr ON lr.room_id = lor.room_id
+        LEFT JOIN community c ON c.community_id = COALESCE(pr.community_id, ps.community_id, vr.community_id, orr.community_id, lr.community_id, lor.community_id)
+        <where>
+            <if test="q.communityId != null">
+                AND COALESCE(pr.community_id, ps.community_id, vr.community_id, orr.community_id, lr.community_id, lor.community_id) = #{q.communityId}
+            </if>
+            <if test="q.vehicleId != null">
+                AND pr.vehicle_id = #{q.vehicleId}
+            </if>
+            <if test="q.spaceId != null">
+                AND pr.space_id = #{q.spaceId}
+            </if>
+            <if test="q.ownerId != null">
+                AND pr.owner_id = #{q.ownerId}
+            </if>
+            <if test="q.plateNo != null and q.plateNo != ''">
+                AND pr.plate_no LIKE CONCAT('%', #{q.plateNo}, '%')
+            </if>
+            <if test="q.payStatus != null and q.payStatus != ''">
+                AND pr.pay_status = #{q.payStatus}
+            </if>
+            <if test="q.recordType != null and q.recordType != ''">
+                AND pr.record_type = #{q.recordType}
+            </if>
+        </where>
+        ORDER BY pr.in_time DESC, pr.record_id DESC
+    </select>
+
+</mapper>

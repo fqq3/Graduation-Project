@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fqq.futurecommunity.system.mapper.SysLogininforMapper">
+    <select id="selectLogininforList" resultType="com.fqq.futurecommunity.system.domain.SysLogininfor">
+        select
+            info_id as infoId,
+            user_name as userName,
+            ipaddr,
+            login_location as loginLocation,
+            browser,
+            os,
+            status,
+            msg,
+            login_time as loginTime
+        from sys_logininfor
+        <where>
+            <if test="logininfor.userName != null and logininfor.userName != ''">
+                and user_name like concat('%', #{logininfor.userName}, '%')
+            </if>
+            <if test="logininfor.ipaddr != null and logininfor.ipaddr != ''">
+                and ipaddr like concat('%', #{logininfor.ipaddr}, '%')
+            </if>
+            <if test="logininfor.status != null and logininfor.status != ''">
+                and status = #{logininfor.status}
+            </if>
+        </where>
+        order by login_time desc, info_id desc
+    </select>
+
+    <delete id="cleanLogininfor">
+        delete from sys_logininfor
+    </delete>
+</mapper>

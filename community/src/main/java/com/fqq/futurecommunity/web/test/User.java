@@ -1,4 +1,4 @@
-package com.fqq.community.web.test;
+package com.fqq.futurecommunity.web.test;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -29,7 +29,7 @@ public class User {
         this.userId = userId;
     }
 
-    public String getUsername() {
+    public String getUserName() {
         return username;
     }
 

@@ -1,18 +1,22 @@
-package com.msb.hjycommunity.web.controller.system;
+package com.fqq.futurecommunity.web.controller.system;
 
-import com.msb.hjycommunity.common.constant.UserConstants;
-import com.msb.hjycommunity.common.core.controller.BaseController;
-import com.msb.hjycommunity.common.core.domain.BaseResponse;
-import com.msb.hjycommunity.common.core.page.PageResult;
-import com.msb.hjycommunity.common.utils.SecurityUtils;
-import com.msb.hjycommunity.system.domain.SysPost;
-import com.msb.hjycommunity.system.service.SysPostService;
-import lombok.extern.java.Log;
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fqq.futurecommunity.common.constant.UserConstants;
+import com.fqq.futurecommunity.common.core.domain.BaseController;
+import com.fqq.futurecommunity.common.core.domain.BaseResponse;
+import com.fqq.futurecommunity.common.core.page.PageResult;
+import com.fqq.futurecommunity.common.utils.ChainedMap;
+import com.fqq.futurecommunity.common.utils.ExcelUtils;
+import com.fqq.futurecommunity.common.utils.FileStorageUtils;
+import com.fqq.futurecommunity.common.utils.SecurityUtils;
+import com.fqq.futurecommunity.system.domain.SysPost;
+import com.fqq.futurecommunity.system.service.SysPostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -33,9 +37,9 @@ public class SysPostController extends BaseController {
     @GetMapping("/list")
     public PageResult list(SysPost post)
     {
-        startPage();
-        List<SysPost> list = postService.selectPostList(post);
-        return getData(list);
+        Page<SysPost> page = startPage();
+        Page<SysPost> result = postService.selectPostList(page, post);
+        return getData(result);
     }
 
     /**
@@ -100,6 +104,17 @@ public class SysPostController extends BaseController {
     {
         List<SysPost> posts = postService.selectPostAll();
         return BaseResponse.success(posts);
+    }
+
+    @GetMapping("/export")
+    @PreAuthorize("@pe.hasPerms('system:post:export')")
+    public ChainedMap export(SysPost post) {
+        Page<SysPost> page = new Page<>(1, 100000);
+        List<SysPost> postList = postService.selectPostList(page, post).getRecords();
+        String fileName = FileStorageUtils.generateFileName("post", "xlsx");
+        Path filePath = FileStorageUtils.getDownloadDir().resolve(fileName);
+        ExcelUtils.writeExcelToFile(postList, SysPost.class, filePath, "Post");
+        return ChainedMap.create().set("code", 200).set("msg", fileName);
     }
 
 }

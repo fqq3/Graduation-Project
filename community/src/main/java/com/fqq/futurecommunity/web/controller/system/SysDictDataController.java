@@ -1,15 +1,21 @@
-package com.msb.hjycommunity.web.controller.system;
+package com.fqq.futurecommunity.web.controller.system;
 
-import com.msb.hjycommunity.common.core.controller.BaseController;
-import com.msb.hjycommunity.common.core.domain.BaseResponse;
-import com.msb.hjycommunity.common.core.page.PageResult;
-import com.msb.hjycommunity.common.utils.SecurityUtils;
-import com.msb.hjycommunity.system.domain.SysDictData;
-import com.msb.hjycommunity.system.service.SysDictDataService;
-import com.msb.hjycommunity.system.service.SysDictTypeService;
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fqq.futurecommunity.common.core.domain.BaseController;
+import com.fqq.futurecommunity.common.core.domain.BaseResponse;
+import com.fqq.futurecommunity.common.core.page.PageResult;
+import com.fqq.futurecommunity.common.utils.ChainedMap;
+import com.fqq.futurecommunity.common.utils.ExcelUtils;
+import com.fqq.futurecommunity.common.utils.FileStorageUtils;
+import com.fqq.futurecommunity.common.utils.SecurityUtils;
+import com.fqq.futurecommunity.system.domain.SysDictData;
+import com.fqq.futurecommunity.system.service.SysDictDataService;
+import com.fqq.futurecommunity.system.service.SysDictTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -32,9 +38,11 @@ public class SysDictDataController extends BaseController {
      */
     @RequestMapping("/list")
     public PageResult list(SysDictData sysDictData){
-        startPage();
-        List<SysDictData> list = dictDataService.selectDictDataList(sysDictData);
-        return getData(list);
+        Page<SysDictData> page = startPage();
+        Page<SysDictData> resultPage =
+                dictDataService.selectDictDataPage(page, sysDictData);
+
+        return getData(resultPage);
     }
 
     /**
@@ -82,5 +90,15 @@ public class SysDictDataController extends BaseController {
         return toAjax(dictDataService.deleteDictDataByIds(dictCodes));
     }
 
+    @GetMapping("/export")
+    @PreAuthorize("@pe.hasPerms('system:dict:export')")
+    public ChainedMap export(SysDictData dictData) {
+        Page<SysDictData> page = new Page<>(1, 100000);
+        List<SysDictData> dictDataList = dictDataService.selectDictDataPage(page, dictData).getRecords();
+        String fileName = FileStorageUtils.generateFileName("dict_data", "xlsx");
+        Path filePath = FileStorageUtils.getDownloadDir().resolve(fileName);
+        ExcelUtils.writeExcelToFile(dictDataList, SysDictData.class, filePath, "DictData");
+        return ChainedMap.create().set("code", 200).set("msg", fileName);
+    }
 
 }

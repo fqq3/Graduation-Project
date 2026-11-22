@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fqq.futurecommunity.community.mapper.CommunityMapper">
+
+    <select id="queryList" resultType="com.fqq.futurecommunity.community.domain.dto.CommunityDto">
+        SELECT
+        hc.*,
+        s1.name AS communityProvinceName,
+        s2.name AS communityCityName,
+        s3.name AS communityTownName
+        FROM community hc
+        LEFT JOIN sys_area s1 ON hc.community_province_code = s1.code
+        LEFT JOIN sys_area s2 ON hc.community_city_code = s2.code
+        LEFT JOIN sys_area s3 ON hc.community_town_code = s3.code
+        <where>
+            <if test="community != null and community.communityId != null">
+                AND hc.community_id = #{community.communityId}
+            </if>
+            <if test="community != null and community.communityName != null and community.communityName != ''">
+                AND hc.community_name LIKE CONCAT('%', #{community.communityName}, '%')
+            </if>
+            <if test="community != null and community.communityCode != null and community.communityCode != ''">
+                AND hc.community_code LIKE CONCAT('%', #{community.communityCode}, '%')
+            </if>
+            <if test="community != null and community.communityProvinceCode != null and community.communityProvinceCode != ''">
+                AND hc.community_province_code = #{community.communityProvinceCode}
+            </if>
+            <if test="community != null and community.communityCityCode != null and community.communityCityCode != ''">
+                AND hc.community_city_code = #{community.communityCityCode}
+            </if>
+            <if test="community != null and community.communityTownCode != null and community.communityTownCode != ''">
+                AND hc.community_town_code = #{community.communityTownCode}
+            </if>
+            <if test="community != null and community.deptId != null">
+                AND hc.dept_id = #{community.deptId}
+            </if>
+            <if test="community != null and community.params != null and community.params.forceNoData != null">
+                AND 1 = 0
+            </if>
+            <if test="community != null and community.params != null and community.params.allowedCommunityIds != null and community.params.allowedCommunityIds.size() > 0">
+                AND hc.community_id IN
+                <foreach collection="community.params.allowedCommunityIds" item="cid" open="(" separator="," close=")">
+                    #{cid}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY hc.community_sort ASC, hc.create_time DESC
+    </select>
+
+    <select id="queryListNoPage" resultType="com.fqq.futurecommunity.community.domain.dto.CommunityDto">
+        SELECT
+        hc.*,
+        s1.name AS communityProvinceName,
+        s2.name AS communityCityName,
+        s3.name AS communityTownName
+        FROM community hc
+        LEFT JOIN sys_area s1 ON hc.community_province_code = s1.code
+        LEFT JOIN sys_area s2 ON hc.community_city_code = s2.code
+        LEFT JOIN sys_area s3 ON hc.community_town_code = s3.code
+        <where>
+            <if test="community != null and community.communityId != null">
+                AND hc.community_id = #{community.communityId}
+            </if>
+            <if test="community != null and community.communityName != null and community.communityName != ''">
+                AND hc.community_name LIKE CONCAT('%', #{community.communityName}, '%')
+            </if>
+            <if test="community != null and community.communityCode != null and community.communityCode != ''">
+                AND hc.community_code LIKE CONCAT('%', #{community.communityCode}, '%')
+            </if>
+            <if test="community != null and community.communityProvinceCode != null and community.communityProvinceCode != ''">
+                AND hc.community_province_code = #{community.communityProvinceCode}
+            </if>
+            <if test="community != null and community.communityCityCode != null and community.communityCityCode != ''">
+                AND hc.community_city_code = #{community.communityCityCode}
+            </if>
+            <if test="community != null and community.communityTownCode != null and community.communityTownCode != ''">
+                AND hc.community_town_code = #{community.communityTownCode}
+            </if>
+            <if test="community != null and community.deptId != null">
+                AND hc.dept_id = #{community.deptId}
+            </if>
+            <if test="community != null and community.params != null and community.params.forceNoData != null">
+                AND 1 = 0
+            </if>
+            <if test="community != null and community.params != null and community.params.allowedCommunityIds != null and community.params.allowedCommunityIds.size() > 0">
+                AND hc.community_id IN
+                <foreach collection="community.params.allowedCommunityIds" item="cid" open="(" separator="," close=")">
+                    #{cid}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY hc.community_sort ASC, hc.create_time DESC
+    </select>
+
+    <select id="selectCommunityIdsByDeptId" resultType="java.lang.Long">
+        SELECT community_id
+        FROM community
+        WHERE dept_id = #{deptId}
+    </select>
+
+    <select id="selectCommunityOverviewBase" resultType="com.fqq.futurecommunity.community.domain.vo.CommunityOverviewVo">
+        SELECT
+        community_id AS communityId,
+        community_name AS communityName,
+        community_detailed_address AS address,
+        community_code AS communityCode,
+        community_longitude AS longitude,
+        community_latitude AS latitude
+        FROM community
+        WHERE community_id = #{communityId}
+    </select>
+
+    <select id="selectCommunityOverviewBasesWithLocation" resultType="com.fqq.futurecommunity.community.domain.vo.CommunityOverviewVo">
+        SELECT
+        community_id AS communityId,
+        community_name AS communityName,
+        community_detailed_address AS address,
+        community_code AS communityCode,
+        community_longitude AS longitude,
+        community_latitude AS latitude
+        FROM community
+        WHERE community_longitude IS NOT NULL
+        AND community_latitude IS NOT NULL
+        AND TRIM(community_longitude) != ''
+        AND TRIM(community_latitude) != ''
+        ORDER BY community_sort ASC, create_time DESC
+    </select>
+
+    <select id="selectAllOverviewCommunityIds" resultType="java.lang.Long">
+        SELECT community_id
+        FROM community
+        WHERE community_longitude IS NOT NULL
+        AND community_latitude IS NOT NULL
+        AND TRIM(community_longitude) != ''
+        AND TRIM(community_latitude) != ''
+        <if test="communityIds != null and communityIds.size() > 0">
+            AND community_id IN
+            <foreach collection="communityIds" item="cid" open="(" separator="," close=")">
+                #{cid}
+            </foreach>
+        </if>
+        ORDER BY
+        CASE WHEN community_id = #{currentCommunityId} THEN 0 ELSE 1 END,
+        community_sort ASC,
+        create_time DESC
+    </select>
+
+    <select id="countBuildingByCommunityId" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM building
+        WHERE community_id = #{communityId}
+    </select>
+
+    <select id="countRoomByCommunityId" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM room
+        WHERE community_id = #{communityId}
+    </select>
+
+    <select id="countOccupiedRoomByCommunityId" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM room
+        WHERE community_id = #{communityId}
+        AND room_status IN ('occupied', 'has_stay')
+    </select>
+
+    <select id="countParkingByCommunityId" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM community_parking_space
+        WHERE community_id = #{communityId}
+    </select>
+
+    <select id="countDeviceByCommunityId" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM community_device
+        WHERE community_id = #{communityId}
+    </select>
+
+    <select id="countErrorDeviceByCommunityId" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM community_device
+        WHERE community_id = #{communityId}
+        AND device_status = '1'
+    </select>
+
+    <select id="countRepairByCommunityId" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM community_repair_order
+        WHERE community_id = #{communityId}
+    </select>
+
+    <select id="countPendingRepairByCommunityId" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM community_repair_order
+        WHERE community_id = #{communityId}
+        AND status = '1'
+    </select>
+
+    <select id="countTodayComplaintByCommunityId" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM complaint_suggest
+        WHERE community_id = #{communityId}
+        AND remark IS NULL
+        AND DATE(create_time) = CURDATE()
+    </select>
+
+    <select id="countTodayVisitorByCommunityId" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM visitor
+        WHERE community_id = #{communityId}
+        AND DATE(visitor_date) = CURDATE()
+    </select>
+
+    <select id="countValidFeeBillByCommunityId" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM community_fee_bill fb
+        INNER JOIN room r ON r.room_id = fb.room_id
+        WHERE r.community_id = #{communityId}
+        AND fb.bill_status != '3'
+    </select>
+
+    <select id="countPaidFeeBillByCommunityId" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM community_fee_bill fb
+        INNER JOIN room r ON r.room_id = fb.room_id
+        WHERE r.community_id = #{communityId}
+        AND fb.bill_status = '2'
+    </select>
+
+</mapper>

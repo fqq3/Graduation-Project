@@ -1,15 +1,21 @@
-package com.msb.hjycommunity.web.controller.system;
+package com.fqq.futurecommunity.web.controller.system;
 
-import com.msb.hjycommunity.common.constant.UserConstants;
-import com.msb.hjycommunity.common.core.controller.BaseController;
-import com.msb.hjycommunity.common.core.domain.BaseResponse;
-import com.msb.hjycommunity.common.core.page.PageResult;
-import com.msb.hjycommunity.common.utils.SecurityUtils;
-import com.msb.hjycommunity.system.domain.SysDictType;
-import com.msb.hjycommunity.system.service.SysDictTypeService;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fqq.futurecommunity.common.constant.UserConstants;
+import com.fqq.futurecommunity.common.core.domain.BaseController;
+import com.fqq.futurecommunity.common.core.domain.BaseResponse;
+import com.fqq.futurecommunity.common.core.page.PageResult;
+import com.fqq.futurecommunity.common.utils.ChainedMap;
+import com.fqq.futurecommunity.common.utils.ExcelUtils;
+import com.fqq.futurecommunity.common.utils.FileStorageUtils;
+import com.fqq.futurecommunity.common.utils.SecurityUtils;
+import com.fqq.futurecommunity.system.domain.SysDictType;
+import com.fqq.futurecommunity.system.service.SysDictTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -27,10 +33,10 @@ public class SysDictTypeController extends BaseController {
      * 多条件分页查询字典类型数据
      */
     @GetMapping("/list")
-    public PageResult list(SysDictType dictType){
-        startPage();
-        List<SysDictType> list = sysDictTypeService.selectDictTypeList(dictType);
-        return getData(list);
+    public PageResult list(SysDictType dictType) {
+        Page<SysDictType> page = startPage();
+        Page<SysDictType> result = sysDictTypeService.selectDictTypeList(page, dictType);
+        return getData(result);
     }
 
     /**
@@ -81,5 +87,20 @@ public class SysDictTypeController extends BaseController {
     public BaseResponse clearCache(){
         sysDictTypeService.clearCache();
         return BaseResponse.success("清除缓存成功");
+    }
+    @GetMapping("/optionselect")
+    public BaseResponse optionselect() {
+        return BaseResponse.success(sysDictTypeService.selectDictTypeAll());
+    }
+
+    @GetMapping("/export")
+    @PreAuthorize("@pe.hasPerms('system:dict:export')")
+    public ChainedMap export(SysDictType dictType) {
+        Page<SysDictType> page = new Page<>(1, 100000);
+        List<SysDictType> dictTypeList = sysDictTypeService.selectDictTypeList(page, dictType).getRecords();
+        String fileName = FileStorageUtils.generateFileName("dict_type", "xlsx");
+        Path filePath = FileStorageUtils.getDownloadDir().resolve(fileName);
+        ExcelUtils.writeExcelToFile(dictTypeList, SysDictType.class, filePath, "DictType");
+        return ChainedMap.create().set("code", 200).set("msg", fileName);
     }
 }

@@ -1,4 +1,4 @@
-package com.fqq.futurecommunity.framework.security;
+package com.fqq.futurecommunity.framework.security.handle;
 
 import com.alibaba.fastjson2.JSON;
 import org.springframework.http.HttpStatus;

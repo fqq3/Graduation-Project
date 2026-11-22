@@ -1,6 +1,7 @@
-package com.msb.hjycommunity.system.service;
+package com.fqq.futurecommunity.system.service;
 
-import com.msb.hjycommunity.system.domain.SysPost;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fqq.futurecommunity.system.domain.SysPost;
 
 import java.util.List;
 
@@ -17,8 +18,7 @@ public interface SysPostService
      * @param post 岗位信息
      * @return 岗位列表
      */
-    public List<SysPost> selectPostList(SysPost post);
-
+    Page<SysPost> selectPostList(Page<SysPost> page, SysPost post);
     /**
      * 查询所有岗位
      *

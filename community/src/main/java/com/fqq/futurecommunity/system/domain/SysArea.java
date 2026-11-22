@@ -1,4 +1,7 @@
-package com.fqq.futurecommunity.common.entity;
+package com.fqq.futurecommunity.system.domain;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 
 import java.io.Serializable;
 
@@ -9,7 +12,10 @@ import java.io.Serializable;
  * @version: 1.0
  */
 public class SysArea implements Serializable{
+        private static final long serialVersionUID=1L;
 
+        @TableId(value = "id", type = IdType.AUTO)
+        private Integer id;
         /**
          * 区划码
          */
@@ -23,9 +29,13 @@ public class SysArea implements Serializable{
          */
         private Integer parentCode;
 
+        public Integer getId() {return id;}
+
+        public void setId(Integer id) {this.id = id;}
+
         public Integer getCode() {
-            return code;
-        }
+                return code;
+            }
 
         public void setCode(Integer code) {
             this.code = code;

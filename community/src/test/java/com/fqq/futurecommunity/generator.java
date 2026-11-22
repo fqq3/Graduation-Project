@@ -1,11 +1,10 @@
-package com.fqq.community;
+package com.fqq.futurecommunity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
-import com.baomidou.mybatisplus.generator.engine.VelocityTemplateEngine;
 
 /**
  * @author : fqq
@@ -44,7 +43,7 @@ public class generator {
                     // ==================== 包配置 ====================
                     .packageConfig(builder -> {
                         builder
-                                .parent("com.fqq.community")  // 设置父包名，所有生成的代码都在此包下
+                                .parent("com.fqq.generator_class")  // 设置父包名，所有生成的代码都在此包下
                                 .mapper("mapper")              // 设置 Mapper 接口存放的子包名
                                 .xml("mapper.xml")              //数据访问层xml包名
                                 .entity("entity")              // 设置实体类存放的子包名
@@ -55,7 +54,7 @@ public class generator {
 
                     // ==================== 策略配置 ====================
                     .strategyConfig(builder -> {
-                        builder.addInclude("community")  ;         // 指定需要生成代码的数据库表名（可填多个，如 "user","order"）
+                        builder.addInclude("sys_notice","room","unit")  ;         // 指定需要生成代码的数据库表名（可填多个，如 "user","order"）
 //                                .mapperBuilder()               // 开始配置 Mapper 生成策略
 //                                .enableMapperAnnotation()      // 为 Mapper 接口添加 @Mapper 注解（Spring Boot 可识别）
 //                                .enableBaseResultMap()         // 在 XML 中生成通用的 <resultMap> 配置

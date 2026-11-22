@@ -1,41 +1,57 @@
-package com.msb.hjycommunity.system.domain;
+package com.fqq.futurecommunity.system.domain;
 
-import cn.afterturn.easypoi.excel.annotation.Excel;
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.msb.hjycommunity.common.core.domain.BaseEntity;
+import com.fqq.futurecommunity.common.core.domain.BaseEntity;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
-/**
+/*
  * 字典类型表
- * @author spikeCong
- * @date 2023/5/19
+
  **/
 public class SysDictType extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
     /** 字典主键 */
-    @Excel(name = "字典主键")
+    @ExcelProperty("字典主键")
     @TableId
     private Long dictId;
 
     /** 字典名称 */
-    @Excel(name = "字典名称")
+    @ExcelProperty("字典名称")
     private String dictName;
 
     /** 字典类型 */
-    @Excel(name = "字典类型")
+    @ExcelProperty("字典类型")
     private String dictType;
 
     /** 状态（0正常 1停用） */
-    @Excel(name = "状态",replace = {"正常_0","停用_1"})
+    @ExcelProperty("状态")//,replace = {"正常_0","停用_1"}
     private String status;
 
     private String remark;
+//    private String beginTime;
+//    private String endTime;
+//
+//    public String getBeginTime() {
+//        return beginTime;
+//    }
+//
+//    public void setBeginTime(String beginTime) {
+//        this.beginTime = beginTime;
+//    }
+//
+//    public String getEndTime() {
+//        return endTime;
+//    }
+//
+//    public void setEndTime(String endTime) {
+//        this.endTime = endTime;
+//    }
 
     @Override
     public String getRemark() {
@@ -66,7 +82,7 @@ public class SysDictType extends BaseEntity {
 
     public void setDictName(String dictName)
     {
-        this.dictName = dictName;
+        this.dictName=dictName;
     }
 
     @NotBlank(message = "字典类型不能为空")

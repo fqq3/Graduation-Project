@@ -1,19 +1,14 @@
-package com.msb.hjycommunity.system.service.impl;
+package com.fqq.futurecommunity.system.service.impl;
 
-import com.msb.hjycommunity.common.constant.Constants;
-import com.msb.hjycommunity.system.domain.SysDictData;
-import com.msb.hjycommunity.system.mapper.SysDictDataMapper;
-import com.msb.hjycommunity.system.service.SysDictDataService;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fqq.futurecommunity.system.domain.SysDictData;
+import com.fqq.futurecommunity.system.mapper.SysDictDataMapper;
+import com.fqq.futurecommunity.system.service.SysDictDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.List;
 
-/**
- * @author spikeCong
- * @date 2023/5/22
- **/
 @Service
 public class SysDictDataServiceImpl implements SysDictDataService {
 
@@ -23,14 +18,11 @@ public class SysDictDataServiceImpl implements SysDictDataService {
 
     /**
      * 根据条件分页查询字典数据
-     *
-     * @param dictData 字典数据信息
-     * @return 字典数据集合信息
+     *  dictData 字典数据信息
      */
     @Override
-    public List<SysDictData> selectDictDataList(SysDictData dictData)
-    {
-        return dictDataMapper.selectDictDataList(dictData);
+    public Page<SysDictData> selectDictDataPage(Page<SysDictData> page, SysDictData sysDictData) {
+        return dictDataMapper.selectDictDataPage(page, sysDictData);
     }
 
     /**

@@ -12,7 +12,7 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-public class CommubityVo {
+public class CommunityVo {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     //小区id
     private Long communityId;

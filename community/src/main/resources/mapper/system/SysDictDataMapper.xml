@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.msb.hjycommunity.system.mapper.SysDictDataMapper">
+<mapper namespace="com.fqq.futurecommunity.system.mapper.SysDictDataMapper">
 
     <resultMap type="SysDictData" id="SysDictDataResult">
         <id     property="dictCode"   column="dict_code"   />
@@ -27,23 +27,37 @@
             status, create_by, create_time, remark
 		from sys_dict_data
     </sql>
-
     <!--    根据条件分页查询字典数据    -->
-    <select id="selectDictDataList" parameterType="SysDictData" resultMap="SysDictDataResult">
+    <select id="selectDictDataPage" resultMap="SysDictDataResult">
         <include refid="selectDictDataVo"/>
         <where>
-            <if test="dictType != null and dictType != ''">
-                AND dict_type = #{dictType}
+            <if test="sysDictData.dictType != null and sysDictData.dictType != ''">
+                AND dict_type = #{sysDictData.dictType}
             </if>
-            <if test="dictLabel != null and dictLabel != ''">
-                AND dict_label like concat('%', #{dictLabel}, '%')
+            <if test="sysDictData.dictLabel != null and sysDictData.dictLabel != ''">
+                AND dict_label like concat('%', #{sysDictData.dictLabel}, '%')
             </if>
-            <if test="status != null and status != ''">
-                AND status = #{status}
+            <if test="sysDictData.status != null and sysDictData.status != ''">
+                AND status = #{sysDictData.status}
             </if>
         </where>
         order by dict_sort asc
     </select>
+<!--    <select id="selectDictDataList" parameterType="SysDictData" resultMap="SysDictDataResult">-->
+<!--        <include refid="selectDictDataVo"/>-->
+<!--        <where>-->
+<!--            <if test="dictType != null and dictType != ''">-->
+<!--                AND dict_type = #{dictType}-->
+<!--            </if>-->
+<!--            <if test="dictLabel != null and dictLabel != ''">-->
+<!--                AND dict_label like concat('%', #{dictLabel}, '%')-->
+<!--            </if>-->
+<!--            <if test="status != null and status != ''">-->
+<!--                AND status = #{status}-->
+<!--            </if>-->
+<!--        </where>-->
+<!--        order by dict_sort asc-->
+<!--    </select>-->
 
     <!--  字典类型查询字典数据  -->
     <select id="selectDictDataByType" parameterType="SysDictData" resultMap="SysDictDataResult">

@@ -1,0 +1,31 @@
+@use 'sass:color';
+
+$theme: #EC797B;
+$color-success: #a4d48c;
+$color-warning: #e9bf77;
+$color-danger: #ec9192;
+$border-color-light: rgba(251, 228, 222, 0.18);
+$border-color-lighter: rgba(251, 228, 222, 0.10);
+$table-border: rgba(251, 228, 222, 0.12);
+
+:root {
+  --el-color-primary: #{$theme};
+  --el-color-success: #{$color-success};
+  --el-color-warning: #{$color-warning};
+  --el-color-danger: #{$color-danger};
+  --el-border-color-light: #{$border-color-light};
+  --el-border-color-lighter: #{$border-color-lighter};
+  --el-table-border-color: #{$table-border};
+  --el-color-primary-dark-2: #{color.mix(black, $theme, $weight: 20%)};
+
+  @for $i from 1 through 9 {
+    --el-color-primary-light-#{$i}: #{color.mix(white, $theme, $weight: $i * 10%)};
+    --el-color-success-light-#{$i}: #{color.mix(white, $color-success, $weight: $i * 10%)};
+    --el-color-warning-light-#{$i}: #{color.mix(white, $color-warning, $weight: $i * 10%)};
+    --el-color-danger-light-#{$i}: #{color.mix(white, $color-danger, $weight: $i * 10%)};
+  }
+}
+
+:export {
+  theme: $theme;
+}

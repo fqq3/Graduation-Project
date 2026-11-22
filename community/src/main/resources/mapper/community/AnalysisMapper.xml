@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fqq.futurecommunity.community.mapper.AnalysisMapper">
+
+    <select id="selectRankingCommunityBases" resultType="com.fqq.futurecommunity.community.domain.vo.CommunityRankingVo">
+        SELECT
+            community_id AS communityId,
+            community_name AS communityName
+        FROM community
+        <where>
+            <if test="communityId != null">
+                AND community_id = #{communityId}
+            </if>
+            <if test="deptId != null">
+                AND dept_id = #{deptId}
+            </if>
+        </where>
+        ORDER BY community_sort ASC, create_time DESC
+    </select>
+
+    <select id="countRankingRoomByCommunityId" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM room
+        WHERE community_id = #{communityId}
+    </select>
+
+    <select id="countRankingOccupiedRoomByCommunityId" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM room
+        WHERE community_id = #{communityId}
+          AND room_status IN ('occupied', 'has_stay')
+    </select>
+
+    <select id="countRankingDeviceByCommunityId" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM community_device
+        WHERE community_id = #{communityId}
+    </select>
+
+    <select id="countRankingErrorDeviceByCommunityId" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM community_device
+        WHERE community_id = #{communityId}
+          AND device_status = '1'
+    </select>
+
+    <select id="countRankingValidFeeBillByCommunityId" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM community_fee_bill fb
+        INNER JOIN room r ON r.room_id = fb.room_id
+        WHERE r.community_id = #{communityId}
+          AND fb.bill_status != '3'
+          AND fb.create_time <![CDATA[>=]]> #{begin}
+          AND fb.create_time <![CDATA[<]]> #{end}
+    </select>
+
+    <select id="countRankingPaidFeeBillByCommunityId" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM community_fee_bill fb
+        INNER JOIN room r ON r.room_id = fb.room_id
+        WHERE r.community_id = #{communityId}
+          AND fb.bill_status = '2'
+          AND fb.create_time <![CDATA[>=]]> #{begin}
+          AND fb.create_time <![CDATA[<]]> #{end}
+    </select>
+
+    <select id="countRankingRepairByCommunityId" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM community_repair_order
+        WHERE community_id = #{communityId}
+          AND create_time <![CDATA[>=]]> #{begin}
+          AND create_time <![CDATA[<]]> #{end}
+    </select>
+
+    <select id="countRankingPendingRepairByCommunityId" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM community_repair_order
+        WHERE community_id = #{communityId}
+          AND status = '1'
+          AND create_time <![CDATA[>=]]> #{begin}
+          AND create_time <![CDATA[<]]> #{end}
+    </select>
+
+    <select id="countRankingComplaintByCommunityId" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM complaint_suggest
+        WHERE community_id = #{communityId}
+          AND remark IS NULL
+          AND create_time <![CDATA[>=]]> #{begin}
+          AND create_time <![CDATA[<]]> #{end}
+    </select>
+
+    <select id="countRankingParkingSpaceByCommunityId" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM community_parking_space
+        WHERE community_id = #{communityId}
+    </select>
+
+    <select id="countRankingParkingRecordByCommunityId" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM community_parking_record pr
+        WHERE pr.in_time <![CDATA[>=]]> #{begin}
+          AND pr.in_time <![CDATA[<]]> #{end}
+          AND (
+              EXISTS (
+                  SELECT 1
+                  FROM community_vehicle v
+                  INNER JOIN room r ON r.room_id = v.room_id
+                  WHERE v.vehicle_id = pr.vehicle_id
+                    AND r.community_id = #{communityId}
+              )
+              OR EXISTS (
+                  SELECT 1
+                  FROM owner_room od
+                  INNER JOIN room r ON r.room_id = od.room_id
+                  WHERE od.owner_id = pr.owner_id
+                    AND r.community_id = #{communityId}
+              )
+              OR EXISTS (
+                  SELECT 1
+                  FROM community_parking_space ps
+                  WHERE ps.space_id = pr.space_id
+                    AND ps.community_id = #{communityId}
+              )
+          )
+    </select>
+
+
+    <select id="selectComplaintSuggestTexts" resultType="com.fqq.futurecommunity.community.domain.vo.AnalysisTextRow">
+        SELECT
+            CASE
+                WHEN complaint_suggest_type IN ('Complaint', 'complaint', '投诉') THEN 'Complaint'
+                WHEN complaint_suggest_type IN ('Suggest', 'suggest', '建议') THEN 'Suggest'
+                ELSE complaint_suggest_type
+            END AS complaintSuggestType,
+            complaint_suggest_content AS content
+        FROM complaint_suggest
+        WHERE community_id = #{communityId}
+          AND complaint_suggest_content IS NOT NULL
+          AND complaint_suggest_content != ''
+          AND create_time <![CDATA[>=]]> #{beginTime}
+          AND create_time <![CDATA[<]]> #{endTime}
+    </select>
+
+    <select id="countParkingSpace" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM community_parking_space
+        <where>
+            <if test="communityId != null">
+                AND community_id = #{communityId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectParkingPeriods" resultType="com.fqq.futurecommunity.community.domain.vo.ParkingPeriodRow">
+        SELECT
+            pr.in_time AS inTime,
+            pr.out_time AS outTime,
+            pr.record_type AS recordType,
+            pr.vehicle_id AS vehicleId
+        FROM community_parking_record pr
+        <where>
+            <if test="communityId != null">
+                AND (
+                    EXISTS (
+                        SELECT 1
+                        FROM community_vehicle v
+                        INNER JOIN room r ON r.room_id = v.room_id
+                        WHERE v.vehicle_id = pr.vehicle_id
+                          AND r.community_id = #{communityId}
+                    )
+                    OR EXISTS (
+                        SELECT 1
+                        FROM owner_room od
+                        INNER JOIN room r ON r.room_id = od.room_id
+                        WHERE od.owner_id = pr.owner_id
+                          AND r.community_id = #{communityId}
+                    )
+                    OR EXISTS (
+                        SELECT 1
+                        FROM community_parking_space ps
+                        WHERE ps.space_id = pr.space_id
+                          AND ps.community_id = #{communityId}
+                    )
+                )
+            </if>
+            AND pr.in_time <![CDATA[<]]> #{end}
+            AND (pr.out_time IS NULL OR pr.out_time <![CDATA[>]]> #{begin})
+        </where>
+    </select>
+
+    <select id="selectParkingTrend7Days" resultType="com.fqq.futurecommunity.community.domain.vo.ParkingTrendVo">
+        SELECT
+            DATE_FORMAT(pr.in_time, '%Y%m%d') AS date,
+            COUNT(*) AS count
+        FROM community_parking_record pr
+        <where>
+            <if test="communityId != null">
+                AND (
+                    EXISTS (
+                        SELECT 1
+                        FROM community_vehicle v
+                        INNER JOIN room r ON r.room_id = v.room_id
+                        WHERE v.vehicle_id = pr.vehicle_id
+                          AND r.community_id = #{communityId}
+                    )
+                    OR EXISTS (
+                        SELECT 1
+                        FROM owner_room od
+                        INNER JOIN room r ON r.room_id = od.room_id
+                        WHERE od.owner_id = pr.owner_id
+                          AND r.community_id = #{communityId}
+                    )
+                    OR EXISTS (
+                        SELECT 1
+                        FROM community_parking_space ps
+                        WHERE ps.space_id = pr.space_id
+                          AND ps.community_id = #{communityId}
+                    )
+                )
+            </if>
+            AND pr.in_time <![CDATA[>=]]> #{beginDate}
+            AND pr.in_time <![CDATA[<]]> DATE_ADD(#{endDate}, INTERVAL 1 DAY)
+        </where>
+        GROUP BY DATE_FORMAT(pr.in_time, '%Y%m%d')
+        ORDER BY DATE_FORMAT(pr.in_time, '%Y%m%d')
+    </select>
+
+</mapper>

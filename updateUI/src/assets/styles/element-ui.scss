@@ -1,0 +1,119 @@
+// cover some element-ui styles
+
+.el-breadcrumb__inner,
+.el-breadcrumb__inner a {
+  font-weight: 400 !important;
+}
+
+.el-upload {
+  input[type="file"] {
+    display: none !important;
+  }
+}
+
+.el-upload__input {
+  display: none;
+}
+
+.cell {
+  .el-tag {
+    margin-right: 0px;
+  }
+}
+
+.small-padding {
+  .cell {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+}
+
+.fixed-width {
+  // Keep old operation-column density while supporting Element Plus small buttons.
+  .el-button--mini,
+  .el-button--small,
+  .el-button--small.is-link {
+    padding: 7px 10px;
+    width: 60px;
+  }
+}
+
+.status-col {
+  .cell {
+    padding: 0 10px;
+    text-align: center;
+
+    .el-tag {
+      margin-right: 0px;
+    }
+  }
+}
+
+// to fixed https://github.com/ElemeFE/element/issues/2461
+.el-dialog {
+  transform: none;
+  left: 0;
+  position: relative;
+  margin: 0 auto;
+}
+
+// refine element ui upload
+.upload-container {
+  .el-upload {
+    width: 100%;
+
+    .el-upload-dragger {
+      width: 100%;
+      height: 200px;
+    }
+  }
+}
+
+// dropdown
+.el-dropdown-menu {
+  a {
+    display: block
+  }
+}
+
+// fix date-picker ui bug in filter-item
+.el-range-editor.el-input__inner {
+  display: inline-flex !important;
+}
+
+// to fix el-date-picker css style
+.el-range-separator {
+  box-sizing: content-box;
+}
+
+// 修改通知框错误消息颜色
+:deep(.el-notification--error) {
+  .el-notification__title {
+    color: #ff0000 !important; // 红色
+    font-weight: bold !important;
+  }
+}
+
+// 全局通知框标题文本颜色
+.el-notification__title {
+  color: #ff0000 !important;
+}
+
+// 确保所有error类型通知的标题都是红色
+.el-notification {
+  &.is-error .el-notification__title {
+    color: #ff0000 !important;
+  }
+}
+
+// 备选方案：直接修改通知框容器内的所有文本
+// .el-notification--error {
+//   .el-notification__title {
+//     color: #ff0000 !important;
+//     font-weight: bold !important;
+//   }
+  
+//   .el-notification__content {
+//     color: #ff0000 !important;
+//   }
+// }

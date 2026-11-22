@@ -1,14 +1,13 @@
-package com.fqq.community.web.test;
+package com.fqq.futurecommunity.web.test;
 
-import com.fqq.community.common.core.domain.BaseResponse;
-import com.fqq.community.common.core.exception.BaseException;
+import com.fqq.futurecommunity.common.core.domain.BaseResponse;
+import com.fqq.futurecommunity.common.core.exception.BaseException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.naming.Binding;
 import java.util.List;
 
 /**

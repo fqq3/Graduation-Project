@@ -1,14 +1,10 @@
-package com.msb.hjycommunity.system.mapper;
+package com.fqq.futurecommunity.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.msb.hjycommunity.system.domain.SysUserPost;
+import com.fqq.futurecommunity.system.domain.SysUserPost;
 
 import java.util.List;
 
-/**
- * @author spikeCong
- * @date 2023/5/25
- **/
 public interface SysUserPostMapper extends BaseMapper<SysUserPost>
 {
     /**

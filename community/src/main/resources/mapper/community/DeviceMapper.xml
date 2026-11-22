@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fqq.futurecommunity.community.mapper.DeviceMapper">
+
+    <select id="selectDeviceList" resultType="com.fqq.futurecommunity.community.domain.dto.DeviceDto">
+        SELECT
+            d.device_id AS deviceId,
+            d.community_id AS communityId,
+            d.building_id AS buildingId,
+            d.unit_id AS unitId,
+            d.device_name AS deviceName,
+            d.device_code AS deviceCode,
+            d.device_type AS deviceType,
+            d.device_location AS deviceLocation,
+            d.device_status AS deviceStatus,
+            d.online_status AS onlineStatus,
+            d.manufacturer AS manufacturer,
+            d.install_date AS installDate,
+            d.last_maintain_time AS lastMaintainTime,
+            d.next_maintain_time AS nextMaintainTime,
+            d.alarm_status AS alarmStatus,
+            d.alarm_content AS alarmContent,
+            d.create_by AS createBy,
+            d.create_time AS createTime,
+            d.update_by AS updateBy,
+            d.update_time AS updateTime,
+            d.remark AS remark,
+            c.community_name AS communityName,
+            b.building_name AS buildingName,
+            u.unit_name AS unitName
+        FROM community_device d
+        LEFT JOIN community c ON c.community_id = d.community_id
+        LEFT JOIN building b ON b.building_id = d.building_id
+        LEFT JOIN unit u ON u.unit_id = d.unit_id
+        <where>
+            <if test="q.communityId != null">
+                AND d.community_id = #{q.communityId}
+            </if>
+            <if test="q.params != null and q.params.forceNoData != null">
+                AND 1 = 0
+            </if>
+            <if test="q.params != null and q.params.allowedCommunityIds != null and q.params.allowedCommunityIds.size() > 0">
+                AND d.community_id IN
+                <foreach collection="q.params.allowedCommunityIds" item="cid" open="(" separator="," close=")">
+                    #{cid}
+                </foreach>
+            </if>
+            <if test="q.buildingId != null">
+                AND d.building_id = #{q.buildingId}
+            </if>
+            <if test="q.unitId != null">
+                AND d.unit_id = #{q.unitId}
+            </if>
+            <if test="q.deviceName != null and q.deviceName != ''">
+                AND d.device_name LIKE CONCAT('%', #{q.deviceName}, '%')
+            </if>
+            <if test="q.deviceCode != null and q.deviceCode != ''">
+                AND d.device_code LIKE CONCAT('%', #{q.deviceCode}, '%')
+            </if>
+            <if test="q.deviceType != null and q.deviceType != ''">
+                AND d.device_type = #{q.deviceType}
+            </if>
+            <if test="q.deviceStatus != null and q.deviceStatus != ''">
+                AND d.device_status = #{q.deviceStatus}
+            </if>
+            <if test="q.onlineStatus != null and q.onlineStatus != ''">
+                AND d.online_status = #{q.onlineStatus}
+            </if>
+            <if test="q.alarmStatus != null and q.alarmStatus != ''">
+                AND d.alarm_status = #{q.alarmStatus}
+            </if>
+        </where>
+        ORDER BY d.create_time DESC, d.device_id DESC
+    </select>
+
+</mapper>
